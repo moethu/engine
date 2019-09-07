@@ -509,3 +509,19 @@ func (oc *OrbitControl) panUp(distance float32) {
 
 	oc.panOffset.Y += distance
 }
+
+func (oc *OrbitControl) OnKey(ev interface{}) {
+	oc.onKey("", ev)
+}
+
+func (oc *OrbitControl) OnScroll(ev interface{}) {
+	oc.onScroll("", ev)
+}
+
+func (oc *OrbitControl) OnCursorPos(ev interface{}) {
+	oc.onCursorPos("", ev)
+}
+
+func (oc *OrbitControl) OnMouse(ev interface{}) {
+	oc.onMouse("", ev)
+}
