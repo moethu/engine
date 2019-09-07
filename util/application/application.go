@@ -1,7 +1,6 @@
 package application
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"runtime"
@@ -75,18 +74,15 @@ const OnAfterRender = "util.application.OnAfterRender"
 // or the Quit() method is called.
 const OnQuit = "util.application.OnQuit"
 
-// appInstance contains the pointer to the single Application instance
-var appInstance *Application
-
 // Create creates and returns the application object using the specified options.
 // This function must be called only once.
 func Create(ops Options) (*Application, error) {
 
-	if appInstance != nil {
-		return nil, fmt.Errorf("Application already created")
-	}
+	//if appInstance != nil {
+	//	return nil, fmt.Errorf("Application already created")
+	//}
 	app := new(Application)
-	appInstance = app
+	//appInstance = app
 	app.Dispatcher.Initialize()
 	app.TimerManager.Initialize()
 
@@ -104,17 +100,6 @@ func Create(ops Options) (*Application, error) {
 	if ops.TargetFPS != 0 {
 		*app.fullScreen = ops.Fullscreen
 		*app.targetFPS = ops.TargetFPS
-	}
-
-	// Creates flags if requested (override options defaults)
-	if ops.EnableFlags {
-		app.fullScreen = flag.Bool("fullscreen", *app.fullScreen, "Starts application with full screen")
-		app.swapInterval = flag.Int("swapinterval", *app.swapInterval, "Sets the swap buffers interval to this value")
-		app.targetFPS = flag.Uint("targetfps", *app.targetFPS, "Sets the frame rate in frames per second")
-		app.noglErrors = flag.Bool("noglerrors", *app.noglErrors, "Do not check OpenGL errors at each call (may increase FPS)")
-		app.cpuProfile = flag.String("cpuprofile", *app.cpuProfile, "Activate cpu profiling writing profile to the specified file")
-		app.execTrace = flag.String("exectrace", *app.execTrace, "Activate execution tracer writing data to the specified file")
-		flag.Parse()
 	}
 
 	// Creates application logger
@@ -228,13 +213,6 @@ func Create(ops Options) (*Application, error) {
 	app.OnWindowResize()
 
 	return app, nil
-}
-
-// Get returns the application single instance or nil
-// if the application was not created yet
-func Get() *Application {
-
-	return appInstance
 }
 
 // Log returns the application logger
