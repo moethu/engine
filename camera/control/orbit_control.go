@@ -5,11 +5,12 @@
 package control
 
 import (
-	"github.com/g3n/engine/camera"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/util/logger"
-	"github.com/g3n/engine/window"
 	"math"
+
+	"engine/camera"
+	"engine/math32"
+	"engine/util/logger"
+	"engine/window"
 )
 
 // OrbitControl is a camera controller that allows orbiting a center point while looking at it.

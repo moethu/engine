@@ -5,9 +5,9 @@
 package gui
 
 import (
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/text"
-	"github.com/g3n/engine/window"
+	"engine/math32"
+	"engine/text"
+	"engine/window"
 	"strings"
 	"time"
 )

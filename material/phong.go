@@ -5,7 +5,7 @@
 package material
 
 import (
-	"github.com/g3n/engine/math32"
+	"engine/math32"
 )
 
 // Phong material is identical to the Standard material but

@@ -1,15 +1,15 @@
 
-  <p align="center"><img width="150" src="https://github.com/g3n/g3nd/blob/master/data/images/g3n_logo.png" alt="G3N Banner"/></p>
+  <p align="center"><img width="150" src="https://g3nd/blob/master/data/images/g3n_logo.png" alt="G3N Banner"/></p>
   <p align="center">
-    <a href="https://godoc.org/github.com/g3n/engine"><img src="https://godoc.org/github.com/g3n/engine?status.svg" alt="Godoc"></img></a>
-    <a href="https://goreportcard.com/report/github.com/g3n/engine"><img src="https://goreportcard.com/badge/github.com/g3n/engine"  alt="Go Report Card"/></a>
+    <a href="https://godoc.org/engine"><img src="https://godoc.org/engine?status.svg" alt="Godoc"></img></a>
+    <a href="https://goreportcard.com/report/engine"><img src="https://goreportcard.com/badge/engine"  alt="Go Report Card"/></a>
   </p>
   <p><h1 align="center">G3N - Go 3D Game Engine</h1></p>
 
 **G3N** (pronounced "gen") is an OpenGL 3D Game Engine written in Go.
 It can be used to write cross-platform Go applications that show rich and dynamic 3D representations - not just games. A basic integrated GUI framework is provided, and 3D spatial audio is supported through [OpenAL](https://www.openal.org/).
 
-  ### **To see G3N in action try the [G3N demo](https://github.com/g3n/g3nd) or the [Gokoban](https://github.com/danaugrs/gokoban) award winning game.**
+  ### **To see G3N in action try the [G3N demo](https://g3nd) or the [Gokoban](https://github.com/danaugrs/gokoban) award winning game.**
 
   <p align="center">
     <img style="float: right;" src="https://raw.githubusercontent.com/g3n/g3nd/master/data/images/g3nd_screenshots.png" alt="G3ND In Action"/>
@@ -56,7 +56,7 @@ Install the development files of OpenAL and Vorbis using [Homebrew](https://brew
 
   The following command will download and install the engine along with all its Go dependencies:
 
-  `go get -u github.com/g3n/engine/...`
+  `go get -u engine/...`
 
   ## Features
 
@@ -79,30 +79,30 @@ Install the development files of OpenAL and Vorbis using [Homebrew](https://brew
   * Support for HiDPI displays
 
   <p align="center">
-    <img style="float: right;" src="https://github.com/g3n/g3n.github.io/raw/master/img/g3n_banner_small.png" alt="G3N Banner"/>
+    <img style="float: right;" src="https://g3n.github.io/raw/master/img/g3n_banner_small.png" alt="G3N Banner"/>
   </p>
 
   ## Hello G3N
 
   The code below is a basic "hello world" application 
-  ([hellog3n](https://github.com/g3n/demos/tree/master/hellog3n))
+  ([hellog3n](https://demos/tree/master/hellog3n))
   that shows a blue torus.
   You can download and install `hellog3n` via:
     
-    go get -u github.com/g3n/demos/hellog3n
+    go get -u demos/hellog3n
 
-  For more complex demos please see the [G3N demo program](https://github.com/g3n/g3nd).
+  For more complex demos please see the [G3N demo program](https://g3nd).
 
   ```Go
   package main
 
   import (
-      "github.com/g3n/engine/util/application"
-      "github.com/g3n/engine/geometry"
-      "github.com/g3n/engine/material"
-      "github.com/g3n/engine/math32"
-      "github.com/g3n/engine/graphic"
-      "github.com/g3n/engine/light"
+      "engine/util/application"
+      "engine/geometry"
+      "engine/material"
+      "engine/math32"
+      "engine/graphic"
+      "engine/light"
   )
 
   func main() {
@@ -136,19 +136,19 @@ Install the development files of OpenAL and Vorbis using [Homebrew](https://brew
   ```
 
   <p align="center">
-    <img style="float: right;" src="https://github.com/g3n/demos/blob/master/hellog3n/screenshot.png" alt="hellog3n Screenshot"/>
+    <img style="float: right;" src="https://demos/blob/master/hellog3n/screenshot.png" alt="hellog3n Screenshot"/>
   </p>
 
   ## Documentation
 
-  The complete engine API reference can be found here: [![GoDoc](https://godoc.org/github.com/g3n/engine?status.svg)](https://godoc.org/github.com/g3n/engine).
+  The complete engine API reference can be found here: [![GoDoc](https://godoc.org/engine?status.svg)](https://godoc.org/engine).
 
   There is also the beginning of a Getting Started Guide, and a newly created list of Guides and Tutorials:
 
-  * [Getting Started](https://github.com/g3n/engine/wiki/Getting-Started-(WIP))
-  * [Guides and Tutorials](https://github.com/g3n/engine/wiki/Guides-and-Tutorials)
+  * [Getting Started](https://engine/wiki/Getting-Started-(WIP))
+  * [Guides and Tutorials](https://engine/wiki/Guides-and-Tutorials)
 
-  Along with those, a good way to learn how to use the engine is to see the source code of [G3ND - the G3N demo](https://github.com/g3n/g3nd).
+  Along with those, a good way to learn how to use the engine is to see the source code of [G3ND - the G3N demo](https://g3nd).
   
   ## Contributing
 

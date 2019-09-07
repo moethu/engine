@@ -5,8 +5,8 @@
 package material
 
 import (
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
+	"engine/gls"
+	"engine/math32"
 	"unsafe"
 )
 

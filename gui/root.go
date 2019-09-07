@@ -5,9 +5,9 @@
 package gui
 
 import (
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/window"
+	"engine/core"
+	"engine/gls"
+	"engine/window"
 	"sort"
 )
 

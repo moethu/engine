@@ -5,8 +5,8 @@
 package camera
 
 import (
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/math32"
+	"engine/core"
+	"engine/math32"
 )
 
 // Perspective is a perspective camera.

@@ -5,13 +5,13 @@
 package renderer
 
 import (
-	"github.com/g3n/engine/camera"
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/graphic"
-	"github.com/g3n/engine/gui"
-	"github.com/g3n/engine/light"
-	"github.com/g3n/engine/math32"
+	"engine/camera"
+	"engine/core"
+	"engine/gls"
+	"engine/graphic"
+	"engine/gui"
+	"engine/light"
+	"engine/math32"
 	"sort"
 )
 

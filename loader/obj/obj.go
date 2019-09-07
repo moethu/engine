@@ -18,13 +18,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/geometry"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/graphic"
-	"github.com/g3n/engine/material"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/texture"
+	"engine/core"
+	"engine/geometry"
+	"engine/gls"
+	"engine/graphic"
+	"engine/material"
+	"engine/math32"
+	"engine/texture"
 )
 
 // Decoder contains all decoded data from the obj and mtl files
