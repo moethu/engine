@@ -347,7 +347,7 @@ func (gs *GLS) DeleteProgram(program uint32) {
 // more information: http://docs.gl/es3/glReadPixels
 func (gs *GLS) ReadPixels(x, y, width, height int, format, format_type int) []byte {
 	size := uint32((width - x) * (height - y) * 4)
-	C.glReadPixels(C.GLint(x), C.GLint(y), C.GLint(height), C.GLint(width), C.GLenum(format), C.GLenum(format_type), unsafe.Pointer(gs.gobufSize(size)))
+	C.glReadPixels(C.GLint(x), C.GLint(y), C.GLint(width), C.GLint(height), C.GLenum(format), C.GLenum(format_type), unsafe.Pointer(gs.gobufSize(size)))
 	return gs.gobuf[:size]
 }
 
