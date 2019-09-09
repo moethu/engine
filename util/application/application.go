@@ -479,8 +479,8 @@ func (app *Application) Run() error {
 		al.CloseDevice(app.audioDev)
 	}
 
-	// Terminates window manager
-	app.wmgr.Terminate()
+	// Terminates window
+	app.win.Destroy()
 
 	// This is important when using the execution tracer
 	runtime.UnlockOSThread()
