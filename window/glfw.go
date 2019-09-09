@@ -137,7 +137,11 @@ func (m *glfwManager) SetSwapInterval(interval int) {
 
 // Terminate destroys any remainding window, cursors and other related objects.
 func (m *glfwManager) Terminate() {
+	// skip window termination
+}
 
+// DestroyGlfwManager terminates all glfw windows
+func DestroyGlfwManager() {
 	glfw.Terminate()
 	manager = nil
 }
