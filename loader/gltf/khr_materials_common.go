@@ -7,9 +7,9 @@ import (
 )
 
 // loadMaterialCommon receives an interface value describing a KHR_materials_common extension,
-// decodes it and returns a Material closest to the specified description
+// decodes it and returns a Material closest to the specified description.
 // The specification of this extension is at:
-// https://github.com/KhronosGroup/glTF/tree/master/extensions/Khronos/KHR_materials_common
+// https://github.com/KhronosGroup/glTF/tree/master/extensions/1.0/Khronos/KHR_materials_common
 func (g *GLTF) loadMaterialCommon(ext interface{}) (material.IMaterial, error) {
 
 	// The extension must be an object

@@ -5,6 +5,12 @@
 package control
 
 import (
+	"github.com/g3n/engine/camera"
+	"github.com/g3n/engine/core"
+	"github.com/g3n/engine/gui"
+	"github.com/g3n/engine/math32"
+	"github.com/g3n/engine/util/logger"
+	"github.com/g3n/engine/window"
 	"math"
 
 	"engine/camera"
@@ -15,6 +21,7 @@ import (
 
 // OrbitControl is a camera controller that allows orbiting a center point while looking at it.
 type OrbitControl struct {
+	core.Dispatcher         // Embedded event dispatcher
 	Enabled         bool    // Control enabled state
 	EnableRotate    bool    // Rotate enabled state
 	EnableZoom      bool    // Zoom enabled state
@@ -24,7 +31,7 @@ type OrbitControl struct {
 	RotateSpeed     float32 // Rotate speed factor. Default is 1.0
 	MinDistance     float32 // Minimum distance from target. Default is 0.01
 	MaxDistance     float32 // Maximum distance from target. Default is infinity
-	MinPolarAngle   float32 // Minimum polar angle for rotatiom
+	MinPolarAngle   float32 // Minimum polar angle for rotation
 	MaxPolarAngle   float32
 	MinAzimuthAngle float32
 	MaxAzimuthAngle float32
@@ -45,7 +52,7 @@ type OrbitControl struct {
 	rotateEnd   math32.Vector2
 	rotateDelta math32.Vector2
 	panStart    math32.Vector2 // initial pan screen coordinates
-	panEnd      math32.Vector2 // final pan scren coordinates
+	panEnd      math32.Vector2 // final pan screen coordinates
 	panDelta    math32.Vector2
 	panOffset   math32.Vector2
 	zoomStart   float32
@@ -65,13 +72,12 @@ const (
 // Package logger
 var log = logger.New("ORBIT", logger.Default)
 
-// NewOrbitControl creates and returns a pointer to a new orbito control for
-// the specified camera and window
-func NewOrbitControl(icam camera.ICamera, win window.IWindow) *OrbitControl {
+// NewOrbitControl creates and returns a pointer to a new orbit control for the specified camera.
+func NewOrbitControl(icam camera.ICamera) *OrbitControl {
 
 	oc := new(OrbitControl)
+	oc.Dispatcher.Initialize()
 	oc.icam = icam
-	oc.win = win
 
 	oc.cam = icam.GetCamera()
 	if persp, ok := icam.(*camera.Perspective); ok {
@@ -104,10 +110,11 @@ func NewOrbitControl(icam camera.ICamera, win window.IWindow) *OrbitControl {
 	oc.target0 = oc.cam.Target()
 
 	// Subscribe to events
-	oc.win.SubscribeID(window.OnMouseUp, &oc.subsEvents, oc.onMouse)
-	oc.win.SubscribeID(window.OnMouseDown, &oc.subsEvents, oc.onMouse)
-	oc.win.SubscribeID(window.OnScroll, &oc.subsEvents, oc.onScroll)
-	oc.win.SubscribeID(window.OnKeyDown, &oc.subsEvents, oc.onKey)
+	gui.Manager().SubscribeID(window.OnMouseUp, &oc.subsEvents, oc.onMouse)
+	gui.Manager().SubscribeID(window.OnMouseDown, &oc.subsEvents, oc.onMouse)
+	gui.Manager().SubscribeID(window.OnScroll, &oc.subsEvents, oc.onScroll)
+	gui.Manager().SubscribeID(window.OnKeyDown, &oc.subsEvents, oc.onKey)
+	oc.SubscribeID(window.OnCursor, &oc.subsPos, oc.onCursorPos)
 	return oc
 }
 
@@ -115,11 +122,11 @@ func NewOrbitControl(icam camera.ICamera, win window.IWindow) *OrbitControl {
 func (oc *OrbitControl) Dispose() {
 
 	// Unsubscribe to event handlers
-	oc.win.UnsubscribeID(window.OnMouseUp, &oc.subsEvents)
-	oc.win.UnsubscribeID(window.OnMouseDown, &oc.subsEvents)
-	oc.win.UnsubscribeID(window.OnScroll, &oc.subsEvents)
-	oc.win.UnsubscribeID(window.OnKeyDown, &oc.subsEvents)
-	oc.win.UnsubscribeID(window.OnCursor, &oc.subsPos)
+	gui.Manager().UnsubscribeID(window.OnMouseUp, &oc.subsEvents)
+	gui.Manager().UnsubscribeID(window.OnMouseDown, &oc.subsEvents)
+	gui.Manager().UnsubscribeID(window.OnScroll, &oc.subsEvents)
+	gui.Manager().UnsubscribeID(window.OnKeyDown, &oc.subsEvents)
+	oc.UnsubscribeID(window.OnCursor, &oc.subsPos)
 }
 
 // Reset to initial camera position
@@ -133,7 +140,7 @@ func (oc *OrbitControl) Reset() {
 // Pan the camera and target by the specified deltas
 func (oc *OrbitControl) Pan(deltaX, deltaY float32) {
 
-	width, height := oc.win.Size()
+	width, height := window.Get().GetSize()
 	oc.pan(deltaX, deltaY, width, height)
 	oc.updatePan()
 }
@@ -213,7 +220,7 @@ func (oc *OrbitControl) updateRotate() {
 	oc.phiDelta = 0
 }
 
-// Updates camera rotation from tethaDelta and phiDelta
+// Updates camera rotation from thetaDelta and phiDelta
 // ALTERNATIVE rotation algorithm
 func (oc *OrbitControl) updateRotate2() {
 
@@ -343,7 +350,9 @@ func (oc *OrbitControl) onMouse(evname string, ev interface{}) {
 
 	mev := ev.(*window.MouseEvent)
 	// Mouse button pressed
-	if mev.Action == window.Press {
+	switch evname {
+	case window.OnMouseDown:
+		gui.Manager().SetCursorFocus(oc)
 		// Left button pressed sets Rotate state
 		if mev.Button == window.MouseButtonLeft {
 			if !oc.EnableRotate {
@@ -368,16 +377,9 @@ func (oc *OrbitControl) onMouse(evname string, ev interface{}) {
 			oc.state = statePan
 			oc.panStart.Set(float32(mev.Xpos), float32(mev.Ypos))
 		}
-		// If a valid state is set requests mouse position events
-		if oc.state != stateNone {
-			oc.win.SubscribeID(window.OnCursor, &oc.subsPos, oc.onCursorPos)
-		}
 		return
-	}
-
-	// Mouse button released
-	if mev.Action == window.Release {
-		oc.win.UnsubscribeID(window.OnCursor, &oc.subsPos)
+	case window.OnMouseUp:
+		gui.Manager().SetCursorFocus(nil)
 		oc.state = stateNone
 	}
 }
@@ -397,7 +399,7 @@ func (oc *OrbitControl) onCursorPos(evname string, ev interface{}) {
 		oc.rotateDelta.SubVectors(&oc.rotateEnd, &oc.rotateStart)
 		oc.rotateStart = oc.rotateEnd
 		// rotating across whole screen goes 360 degrees around
-		width, height := oc.win.Size()
+		width, height := window.Get().GetSize()
 		oc.RotateLeft(2 * math32.Pi * oc.rotateDelta.X / float32(width) * oc.RotateSpeed)
 		// rotating up and down along whole screen attempts to go 360, but limited to 180
 		oc.RotateUp(2 * math32.Pi * oc.rotateDelta.Y / float32(height) * oc.RotateSpeed)
@@ -440,12 +442,9 @@ func (oc *OrbitControl) onKey(evname string, ev interface{}) {
 	}
 
 	kev := ev.(*window.KeyEvent)
-	if kev.Action == window.Release {
-		return
-	}
 
 	if oc.EnablePan && kev.Mods == 0 {
-		switch kev.Keycode {
+		switch kev.Key {
 		case window.KeyUp:
 			oc.Pan(0, oc.KeyPanSpeed)
 		case window.KeyDown:
@@ -458,7 +457,7 @@ func (oc *OrbitControl) onKey(evname string, ev interface{}) {
 	}
 
 	if oc.EnableRotate && kev.Mods == window.ModShift {
-		switch kev.Keycode {
+		switch kev.Key {
 		case window.KeyUp:
 			oc.RotateUp(oc.KeyRotateSpeed)
 		case window.KeyDown:
@@ -471,7 +470,7 @@ func (oc *OrbitControl) onKey(evname string, ev interface{}) {
 	}
 
 	if oc.EnableZoom && kev.Mods == window.ModControl {
-		switch kev.Keycode {
+		switch kev.Key {
 		case window.KeyUp:
 			oc.Zoom(-1.0)
 		case window.KeyDown:

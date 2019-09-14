@@ -5,9 +5,9 @@
 package gui
 
 import (
-	"engine/math32"
-	"engine/window"
-	"engine/gui/assets/icon"
+	"github.com/g3n/engine/gui/assets/icon"
+	"github.com/g3n/engine/math32"
+	"github.com/g3n/engine/window"
 )
 
 /*********************************************
@@ -37,8 +37,8 @@ type Window struct {
 	title       *WindowTitle // internal optional title panel
 	client      Panel        // internal client panel
 	resizable   bool         // Specifies whether the window is resizable
-	drag        bool    // Whether the mouse buttons is pressed (i.e. when dragging)
-	dragPadding float32 // Extra width used to resize (in addition to border sizes)
+	drag        bool         // Whether the mouse buttons is pressed (i.e. when dragging)
+	dragPadding float32      // Extra width used to resize (in addition to border sizes)
 
 	// To keep track of which window borders the cursor is over
 	overTop    bool
@@ -72,7 +72,7 @@ func NewWindow(width, height float32) *Window {
 	w := new(Window)
 	w.styles = &StyleDefault().Window
 
-	w.Panel.Initialize(width, height)
+	w.Panel.Initialize(w, width, height)
 	w.Panel.Subscribe(OnMouseDown, w.onMouse)
 	w.Panel.Subscribe(OnMouseUp, w.onMouse)
 	w.Panel.Subscribe(OnCursor, w.onCursor)
@@ -80,7 +80,7 @@ func NewWindow(width, height float32) *Window {
 	w.Panel.Subscribe(OnCursorLeave, w.onCursor)
 	w.Panel.Subscribe(OnResize, func(evname string, ev interface{}) { w.recalc() })
 
-	w.client.Initialize(0, 0)
+	w.client.Initialize(&w.client, 0, 0)
 	w.Panel.Add(&w.client)
 
 	w.dragPadding = 5
@@ -107,6 +107,7 @@ func (w *Window) SetTitle(text string) {
 
 	if w.title == nil {
 		w.title = newWindowTitle(w, text)
+		w.title.Subscribe(OnCursor, w.onCursor)
 		w.Panel.Add(w.title)
 	} else {
 		w.title.label.SetText(text)
@@ -139,15 +140,14 @@ func (w *Window) onMouse(evname string, ev interface{}) {
 		// If the click happened inside the draggable area, then set drag to true
 		if w.overTop || w.overRight || w.overBottom || w.overLeft {
 			w.drag = true
-			w.root.SetMouseFocus(w)
+			Manager().SetCursorFocus(w)
 		}
 	case OnMouseUp:
 		w.drag = false
-		w.root.SetMouseFocus(nil)
+		Manager().SetCursorFocus(nil)
 	default:
 		return
 	}
-	w.root.StopPropagation(StopAll)
 }
 
 // onCursor process subscribed cursor events over the window
@@ -177,7 +177,7 @@ func (w *Window) onCursor(evname string, ev interface{}) {
 			if w.overRight {
 				delta := cev.Xpos - (w.pospix.X + w.width)
 				newWidth := w.Width() + delta
-				w.SetWidth(math32.Max(newWidth, w.title.label.Width() + w.title.closeButton.Width()))
+				w.SetWidth(math32.Max(newWidth, w.title.label.Width()+w.title.closeButton.Width()))
 			}
 			if w.overBottom {
 				delta := cev.Ypos - (w.pospix.Y + w.height)
@@ -203,50 +203,46 @@ func (w *Window) onCursor(evname string, ev interface{}) {
 			// Check if cursor is on the top of the window (border + drag margin)
 			if cy <= w.borderSizes.Top {
 				w.overTop = true
-				w.root.SetCursorVResize()
 			} else {
 				w.overTop = false
 			}
 			// Check if cursor is on the bottom of the window (border + drag margin)
-			if cy >= w.height-w.borderSizes.Bottom - w.dragPadding {
+			if cy >= w.height-w.borderSizes.Bottom-w.dragPadding {
 				w.overBottom = true
 			} else {
 				w.overBottom = false
 			}
 			// Check if cursor is on the left of the window (border + drag margin)
-			if cx <= w.borderSizes.Left + w.dragPadding {
+			if cx <= w.borderSizes.Left+w.dragPadding {
 				w.overLeft = true
-				w.root.SetCursorHResize()
 			} else {
 				w.overLeft = false
 			}
 			// Check if cursor is on the right of the window (border + drag margin)
-			if cx >= w.width-w.borderSizes.Right - w.dragPadding {
+			if cx >= w.width-w.borderSizes.Right-w.dragPadding {
 				w.overRight = true
-				w.root.SetCursorHResize()
 			} else {
 				w.overRight = false
 			}
 			// Update cursor image based on cursor position
 			if (w.overTop || w.overBottom) && !w.overRight && !w.overLeft {
-				w.root.SetCursorVResize()
+				window.Get().SetCursor(window.VResizeCursor)
 			} else if (w.overRight || w.overLeft) && !w.overTop && !w.overBottom {
-				w.root.SetCursorHResize()
+				window.Get().SetCursor(window.HResizeCursor)
 			} else if (w.overRight && w.overTop) || (w.overBottom && w.overLeft) {
-				w.root.SetCursorDiagResize1()
+				window.Get().SetCursor(window.DiagResize1Cursor)
 			} else if (w.overRight && w.overBottom) || (w.overTop && w.overLeft) {
-				w.root.SetCursorDiagResize2()
+				window.Get().SetCursor(window.DiagResize2Cursor)
 			}
 			// If cursor is not near the border of the window then reset the cursor
 			if !w.overTop && !w.overRight && !w.overBottom && !w.overLeft {
-				w.root.SetCursorNormal()
+				window.Get().SetCursor(window.ArrowCursor)
 			}
 		}
 	} else if evname == OnCursorLeave {
-		w.root.SetCursorNormal()
+		window.Get().SetCursor(window.ArrowCursor)
 		w.drag = false
 	}
-	w.root.StopPropagation(StopAll)
 }
 
 // update updates the window's visual state.
@@ -296,7 +292,7 @@ func (w *Window) recalc() {
 
 // WindowTitle represents the title bar of a Window
 type WindowTitle struct {
-	Panel              // Embedded panel
+	Panel                      // Embedded panel
 	win                *Window // Window to which this title belongs
 	label              Label   // Label for the title
 	pressed            bool    // Whether the left mouse button is pressed
@@ -304,14 +300,14 @@ type WindowTitle struct {
 	closeButtonVisible bool    // Whether the close button is present
 
 	// Last mouse coordinates
-	mouseX             float32
-	mouseY             float32
+	mouseX float32
+	mouseY float32
 }
 
 // WindowTitleStyle contains the styling for a window title.
 type WindowTitleStyle struct {
 	PanelStyle
-	FgColor     math32.Color4
+	FgColor math32.Color4
 }
 
 // newWindowTitle creates and returns a pointer to a window title panel.
@@ -320,14 +316,14 @@ func newWindowTitle(win *Window, text string) *WindowTitle {
 	wt := new(WindowTitle)
 	wt.win = win
 
-	wt.Panel.Initialize(0, 0)
+	wt.Panel.Initialize(wt, 0, 0)
 	wt.label.initialize(text, StyleDefault().Font)
 	wt.Panel.Add(&wt.label)
 
 	wt.closeButton = NewButton("")
 	wt.closeButton.SetIcon(icon.Close)
 	wt.closeButton.Subscribe(OnCursorEnter, func(s string, i interface{}) {
-		wt.win.root.SetCursorNormal()
+		window.Get().SetCursor(window.ArrowCursor)
 	})
 	wt.closeButton.Subscribe(OnClick, func(s string, i interface{}) {
 		wt.win.Parent().GetNode().Remove(wt.win)
@@ -368,25 +364,23 @@ func (wt *WindowTitle) onMouse(evname string, ev interface{}) {
 		wt.pressed = true
 		wt.mouseX = mev.Xpos
 		wt.mouseY = mev.Ypos
-		wt.win.root.SetMouseFocus(wt)
+		Manager().SetCursorFocus(wt)
 	case OnMouseUp:
 		wt.pressed = false
-		wt.win.root.SetMouseFocus(nil)
+		Manager().SetCursorFocus(nil)
 	default:
 		return
 	}
-	wt.win.root.StopPropagation(Stop3D)
 }
 
 // onCursor process subscribed cursor events over the window title.
 func (wt *WindowTitle) onCursor(evname string, ev interface{}) {
 
 	if evname == OnCursorLeave {
-		wt.win.root.SetCursorNormal()
+		window.Get().SetCursor(window.ArrowCursor)
 		wt.pressed = false
 	} else if evname == OnCursor {
 		if !wt.pressed {
-			wt.win.root.StopPropagation(Stop3D)
 			return
 		}
 		cev := ev.(*window.CursorEvent)
@@ -398,7 +392,6 @@ func (wt *WindowTitle) onCursor(evname string, ev interface{}) {
 		posY := wt.win.Position().Y - dy
 		wt.win.SetPosition(posX, posY)
 	}
-	wt.win.root.StopPropagation(Stop3D)
 }
 
 // applyStyle applies the specified WindowTitleStyle.

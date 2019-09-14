@@ -5,11 +5,9 @@
 package light
 
 import (
-	"unsafe"
-
-	"engine/core"
-	"engine/gls"
-	"engine/math32"
+	"github.com/g3n/engine/core"
+	"github.com/g3n/engine/gls"
+	"github.com/g3n/engine/math32"
 )
 
 // Directional represents a directional, positionless light
@@ -29,7 +27,7 @@ type Directional struct {
 func NewDirectional(color *math32.Color, intensity float32) *Directional {
 
 	ld := new(Directional)
-	ld.Node.Init()
+	ld.Node.Init(ld)
 
 	ld.color = *color
 	ld.intensity = intensity
@@ -81,5 +79,5 @@ func (ld *Directional) RenderSetup(gs *gls.GLS, rinfo *core.RenderInfo, idx int)
 	// Transfer uniform data
 	const vec3count = 2
 	location := ld.uni.LocationIdx(gs, vec3count*int32(idx))
-	gs.Uniform3fvUP(location, vec3count, unsafe.Pointer(&ld.udata))
+	gs.Uniform3fv(location, vec3count, &ld.udata.color.R)
 }

@@ -2,6 +2,8 @@
 // Fragment Shader template
 //
 
+precision highp float;
+
 // Inputs from vertex shader
 in vec4 Position;       // Vertex position in camera coordinates.
 in vec3 Normal;         // Vertex normal in camera coordinates.
@@ -19,16 +21,15 @@ void main() {
 
     // Mix material color with textures colors
     vec4 texMixed = vec4(1);
-    vec4 texColor;
     #if MAT_TEXTURES==1
-        MIX_TEXTURE(0)
+        texMixed = MIX_TEXTURE(texMixed, FragTexcoord, 0);
     #elif MAT_TEXTURES==2
-        MIX_TEXTURE(0)
-        MIX_TEXTURE(1)
+        texMixed = MIX_TEXTURE(texMixed, FragTexcoord, 0);
+        texMixed = MIX_TEXTURE(texMixed, FragTexcoord, 1);
     #elif MAT_TEXTURES==3
-        MIX_TEXTURE(0)
-        MIX_TEXTURE(1)
-        MIX_TEXTURE(2)
+        texMixed = MIX_TEXTURE(texMixed, FragTexcoord, 0);
+        texMixed = MIX_TEXTURE(texMixed, FragTexcoord, 1);
+        texMixed = MIX_TEXTURE(texMixed, FragTexcoord, 2);
     #endif
 
     // Combine material with texture colors

@@ -58,18 +58,18 @@ func newSplitter(horiz bool, width, height float32) *Splitter {
 	s := new(Splitter)
 	s.horiz = horiz
 	s.styles = &StyleDefault().Splitter
-	s.Panel.Initialize(width, height)
+	s.Panel.Initialize(s, width, height)
 
 	// Initialize left/top panel
-	s.P0.Initialize(0, 0)
+	s.P0.Initialize(&s.P0, 0, 0)
 	s.Panel.Add(&s.P0)
 
 	// Initialize right/bottom panel
-	s.P1.Initialize(0, 0)
+	s.P1.Initialize(&s.P1, 0, 0)
 	s.Panel.Add(&s.P1)
 
 	// Initialize spacer panel
-	s.spacer.Initialize(0, 0)
+	s.spacer.Initialize(&s.spacer, 0, 0)
 	s.Panel.Add(&s.spacer)
 
 	if horiz {
@@ -116,6 +116,9 @@ func (s *Splitter) onResize(evname string, ev interface{}) {
 func (s *Splitter) onMouse(evname string, ev interface{}) {
 
 	mev := ev.(*window.MouseEvent)
+	if mev.Button != window.MouseButtonLeft {
+		return
+	}
 	switch evname {
 	case OnMouseDown:
 		s.pressed = true
@@ -124,14 +127,12 @@ func (s *Splitter) onMouse(evname string, ev interface{}) {
 		} else {
 			s.posLast = mev.Ypos
 		}
-		s.root.SetMouseFocus(&s.spacer)
+		Manager().SetCursorFocus(&s.spacer)
 	case OnMouseUp:
 		s.pressed = false
-		s.root.SetCursorNormal()
-		s.root.SetMouseFocus(nil)
-	default:
+		window.Get().SetCursor(window.ArrowCursor)
+		Manager().SetCursorFocus(nil)
 	}
-	s.root.StopPropagation(Stop3D)
 }
 
 // onCursor receives subscribed cursor events over the spacer panel
@@ -139,14 +140,14 @@ func (s *Splitter) onCursor(evname string, ev interface{}) {
 
 	if evname == OnCursorEnter {
 		if s.horiz {
-			s.root.SetCursorHResize()
+			window.Get().SetCursor(window.HResizeCursor)
 		} else {
-			s.root.SetCursorVResize()
+			window.Get().SetCursor(window.VResizeCursor)
 		}
 		s.mouseOver = true
 		s.update()
 	} else if evname == OnCursorLeave {
-		s.root.SetCursorNormal()
+		window.Get().SetCursor(window.ArrowCursor)
 		s.mouseOver = false
 		s.update()
 	} else if evname == OnCursor {
@@ -168,7 +169,6 @@ func (s *Splitter) onCursor(evname string, ev interface{}) {
 		s.setSplit(pos)
 		s.recalc()
 	}
-	s.root.StopPropagation(Stop3D)
 }
 
 // setSplit sets the validated and clamped split position from the received value.

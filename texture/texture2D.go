@@ -12,7 +12,6 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 	"os"
-	"unsafe"
 
 	"engine/gls"
 )
@@ -325,7 +324,6 @@ func (t *Texture2D) RenderSetup(gs *gls.GLS, slotIdx, uniIdx int) { // Could hav
 			t.iformat,      // internal format
 			t.width,        // width in texels
 			t.height,       // height in texels
-			0,              // border must be 0
 			t.format,       // format of supplied texture data
 			t.formatType,   // type of external format color component
 			t.data,         // image data
@@ -359,5 +357,5 @@ func (t *Texture2D) RenderSetup(gs *gls.GLS, slotIdx, uniIdx int) { // Could hav
 	// Transfer texture info combined uniform
 	const vec2count = 3
 	location = t.uniInfo.LocationIdx(gs, vec2count*int32(uniIdx))
-	gs.Uniform2fvUP(location, vec2count, unsafe.Pointer(&t.udata))
+	gs.Uniform2fv(location, vec2count, &t.udata.offsetX)
 }

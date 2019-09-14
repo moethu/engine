@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// +build !wasm
+
 package audio
 
 // #include <stdlib.h>
@@ -48,7 +50,7 @@ func NewPlayer(filename string) (*Player, error) {
 
 	// Creates player
 	p := new(Player)
-	p.Node.Init()
+	p.Node.Init(p)
 	p.af = af
 
 	// Generate buffers names

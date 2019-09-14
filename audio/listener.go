@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// +build !wasm
+
 package audio
 
 import (
@@ -20,7 +22,7 @@ type Listener struct {
 func NewListener() *Listener {
 
 	l := new(Listener)
-	l.Node.Init()
+	l.Node.Init(l)
 	return l
 }
 

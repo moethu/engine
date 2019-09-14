@@ -15,10 +15,9 @@ import (
 	"strconv"
 )
 
-const GLSL_VERSION = "330 core"
-
 // Regular expression to parse #include <name> [quantity] directive
 var rexInclude *regexp.Regexp
+
 const indexParameter = "{i}"
 
 func init() {
@@ -48,7 +47,7 @@ type ProgSpecs struct {
 
 // Shaman is the shader manager
 type Shaman struct {
-	gs       *gls.GLS
+	gs       *gls.GLS                       // Reference to OpenGL state
 	includes map[string]string              // include files sources
 	shadersm map[string]string              // maps shader name to its template
 	proginfo map[string]shaders.ProgramInfo // maps name of the program to ProgramInfo
@@ -245,7 +244,6 @@ func (sm *Shaman) GenProgram(specs *ShaderSpecs) (*gls.Program, error) {
 	return prog, nil
 }
 
-
 func (sm *Shaman) preprocess(source string, defines map[string]string) (string, error) {
 
 	// If defines map supplied, generate prefix with glsl version directive first,
@@ -258,9 +256,8 @@ func (sm *Shaman) preprocess(source string, defines map[string]string) (string, 
 		}
 	}
 
-	return sm.processIncludes(prefix + source, defines)
+	return sm.processIncludes(prefix+source, defines)
 }
-
 
 // preprocess preprocesses the specified source prefixing it with optional defines directives
 // contained in "defines" parameter and replaces '#include <name>' directives

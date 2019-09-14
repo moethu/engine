@@ -142,7 +142,7 @@ func NewMenuBar() *Menu {
 
 	m := NewMenu()
 	m.bar = true
-	m.Panel.Subscribe(OnMouseOut, m.onMouse)
+	m.Panel.Subscribe(OnMouseDownOut, m.onMouse)
 	return m
 }
 
@@ -150,11 +150,9 @@ func NewMenuBar() *Menu {
 func NewMenu() *Menu {
 
 	m := new(Menu)
-	m.Panel.Initialize(0, 0)
+	m.Panel.Initialize(m, 0, 0)
 	m.styles = &StyleDefault().Menu
 	m.items = make([]*MenuItem, 0)
-	m.Panel.Subscribe(OnCursorEnter, m.onCursor)
-	m.Panel.Subscribe(OnCursor, m.onCursor)
 	m.Panel.Subscribe(OnKeyDown, m.onKey)
 	m.Panel.Subscribe(OnResize, m.onResize)
 	m.update()
@@ -190,6 +188,7 @@ func (m *Menu) AddSeparator() *MenuItem {
 func (m *Menu) AddMenu(text string, subm *Menu) *MenuItem {
 
 	mi := newMenuItem(text, m.styles.Item)
+	mi.zLayerDelta = 1
 	m.Panel.Add(mi)
 	m.items = append(m.items, mi)
 	mi.submenu = subm
@@ -213,22 +212,12 @@ func (m *Menu) RemoveItem(mi *MenuItem) {
 
 }
 
-// onCursor process subscribed cursor events
-func (m *Menu) onCursor(evname string, ev interface{}) {
-
-	switch evname {
-	case OnCursorEnter:
-		m.root.SetKeyFocus(m)
-	}
-	m.root.StopPropagation(StopAll)
-}
-
 // onKey process subscribed key events
 func (m *Menu) onKey(evname string, ev interface{}) {
 
 	sel := m.selectedPos()
 	kev := ev.(*window.KeyEvent)
-	switch kev.Keycode {
+	switch kev.Key {
 	// Select next enabled menu item
 	case window.KeyDown:
 		if sel < 0 {
@@ -244,7 +233,7 @@ func (m *Menu) onKey(evname string, ev interface{}) {
 			// Sets autoOpen and selects sub menu
 			m.autoOpen = true
 			mi.update()
-			m.root.SetKeyFocus(mi.submenu)
+			Manager().SetKeyFocus(mi.submenu)
 			mi.submenu.setSelectedPos(0)
 			return
 		}
@@ -281,7 +270,7 @@ func (m *Menu) onKey(evname string, ev interface{}) {
 			} else {
 				m.mitem.menu.setSelectedItem(m.mitem)
 			}
-			m.root.SetKeyFocus(m.mitem.menu)
+			Manager().SetKeyFocus(m.mitem.menu)
 			return
 		}
 
@@ -299,7 +288,7 @@ func (m *Menu) onKey(evname string, ev interface{}) {
 		}
 		// Enter into sub menu
 		if mi.submenu != nil {
-			m.root.SetKeyFocus(mi.submenu)
+			Manager().SetKeyFocus(mi.submenu)
 			mi.submenu.setSelectedPos(0)
 			return
 		}
@@ -308,7 +297,7 @@ func (m *Menu) onKey(evname string, ev interface{}) {
 			sel := m.mitem.menu.selectedPos()
 			next := m.mitem.menu.nextItem(sel)
 			m.mitem.menu.setSelectedPos(next)
-			m.root.SetKeyFocus(m.mitem.menu)
+			Manager().SetKeyFocus(m.mitem.menu)
 		}
 	// Enter -> Select menu option
 	case window.KeyEnter:
@@ -346,7 +335,7 @@ func (m *Menu) onMouse(evname string, ev interface{}) {
 
 	// Clear menu bar after some time, to give time for menu items
 	// to receive onMouse events.
-	m.Root().SetTimeout(1*time.Millisecond, nil, func(arg interface{}) {
+	Manager().SetTimeout(1*time.Millisecond, nil, func(arg interface{}) {
 		m.autoOpen = false
 		m.setSelectedPos(-1)
 	})
@@ -366,7 +355,7 @@ func (m *Menu) checkKey(kev *window.KeyEvent) *MenuItem {
 
 	for i := 0; i < len(m.items); i++ {
 		mi := m.items[i]
-		if mi.keyCode == kev.Keycode && mi.keyMods == kev.Mods {
+		if mi.keyCode == kev.Key && mi.keyMods == kev.Mods {
 			return mi
 		}
 		if mi.submenu != nil {
@@ -571,7 +560,7 @@ func (m *Menu) recalcBar(setSize bool) {
 func newMenuItem(text string, styles *MenuItemStyles) *MenuItem {
 
 	mi := new(MenuItem)
-	mi.Panel.Initialize(0, 0)
+	mi.Panel.Initialize(mi, 0, 0)
 	mi.styles = styles
 	if text != "" {
 		mi.label = NewLabel(text)
@@ -670,11 +659,10 @@ func (mi *MenuItem) SetSubmenu(smi *MenuItem) *MenuItem {
 }
 
 // SetEnabled sets the enabled state of this menu item
-func (mi *MenuItem) SetEnabled(enabled bool) *MenuItem {
+func (mi *MenuItem) SetEnabled(enabled bool) {
 
 	mi.disabled = !enabled
 	mi.update()
-	return mi
 }
 
 // SetId sets this menu item string id which can be used to identify
@@ -716,7 +704,6 @@ func (mi *MenuItem) onCursor(evname string, ev interface{}) {
 	case OnCursorEnter:
 		mi.menu.setSelectedItem(mi)
 	}
-	mi.root.StopPropagation(StopAll)
 }
 
 // onMouse processes subscribed mouse events over the menu item
@@ -729,7 +716,7 @@ func (mi *MenuItem) onMouse(evname string, ev interface{}) {
 			mi.menu.autoOpen = !mi.menu.autoOpen
 			if mi.submenu != nil && mi.submenu.Visible() {
 				mi.submenu.SetVisible(false)
-				mi.root.SetKeyFocus(mi.menu)
+				Manager().SetKeyFocus(mi.menu)
 			} else {
 				mi.update()
 			}
@@ -739,7 +726,6 @@ func (mi *MenuItem) onMouse(evname string, ev interface{}) {
 		}
 		mi.activate()
 	}
-	mi.root.StopPropagation(StopAll)
 }
 
 // activate activates this menu item dispatching OnClick events
@@ -750,7 +736,7 @@ func (mi *MenuItem) activate() {
 		rm.autoOpen = false
 	}
 	rm.setSelectedPos(-1)
-	mi.root.SetKeyFocus(rm)
+	Manager().SetKeyFocus(rm)
 	mi.dispatchAll(OnClick, mi)
 }
 

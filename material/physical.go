@@ -5,11 +5,9 @@
 package material
 
 import (
-	"unsafe"
-
-	"engine/gls"
-	"engine/math32"
-	"engine/texture"
+	"github.com/g3n/engine/gls"
+	"github.com/g3n/engine/math32"
+	"github.com/g3n/engine/texture"
 )
 
 // Physical is a physically based rendered material which uses the metallic-roughness model.
@@ -172,5 +170,5 @@ func (m *Physical) RenderSetup(gl *gls.GLS) {
 
 	m.Material.RenderSetup(gl)
 	location := m.uni.Location(gl)
-	gl.Uniform4fvUP(location, physicalVec4Count, unsafe.Pointer(&m.udata))
+	gl.Uniform4fv(location, physicalVec4Count, &m.udata.baseColorFactor.R)
 }

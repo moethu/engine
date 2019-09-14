@@ -16,7 +16,7 @@ type Perspective struct {
 	aspect      float32        // aspect ratio (width/height)
 	near        float32        // near plane z coordinate
 	far         float32        // far plane z coordinate
-	projChanged bool           // camera projection parameters changed (needs to recalculates projection matrix)
+	projChanged bool           // camera projection parameters changed (needs to recalculate projection matrix)
 	projMatrix  math32.Matrix4 // last calculated projection matrix
 }
 
@@ -84,11 +84,7 @@ func (cam *Perspective) Project(v *math32.Vector3) (*math32.Vector3, error) {
 
 	// Get camera view matrix
 	var matrix math32.Matrix4
-	matrixWorld := cam.MatrixWorld()
-	err := matrix.GetInverse(&matrixWorld)
-	if err != nil {
-		return nil, err
-	}
+	cam.ViewMatrix(&matrix)
 
 	// Update camera projection matrix
 	cam.updateProjMatrix()

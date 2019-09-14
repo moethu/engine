@@ -5,11 +5,9 @@
 package light
 
 import (
-	"unsafe"
-
-	"engine/core"
-	"engine/gls"
-	"engine/math32"
+	"github.com/g3n/engine/core"
+	"github.com/g3n/engine/gls"
+	"github.com/g3n/engine/math32"
 )
 
 // Spot represents a spotlight
@@ -35,7 +33,7 @@ type Spot struct {
 func NewSpot(color *math32.Color, intensity float32) *Spot {
 
 	l := new(Spot)
-	l.Node.Init()
+	l.Node.Init(l)
 	l.color = *color
 	l.intensity = intensity
 	l.uni.Init("SpotLight")
@@ -148,5 +146,5 @@ func (l *Spot) RenderSetup(gs *gls.GLS, rinfo *core.RenderInfo, idx int) {
 	// Transfer uniform data
 	const vec3count = 5
 	location := l.uni.LocationIdx(gs, vec3count*int32(idx))
-	gs.Uniform3fvUP(location, vec3count, unsafe.Pointer(&l.udata))
+	gs.Uniform3fv(location, vec3count, &l.udata.color.R)
 }

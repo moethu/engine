@@ -193,12 +193,12 @@ type tableCell struct {
 func NewTable(width, height float32, cols []TableColumn) (*Table, error) {
 
 	t := new(Table)
-	t.Panel.Initialize(width, height)
+	t.Panel.Initialize(t, width, height)
 	t.styles = &StyleDefault().Table
 	t.rowCursor = -1
 
 	// Initialize table header
-	t.header.Initialize(0, 0)
+	t.header.Initialize(&t.header, 0, 0)
 	t.header.cmap = make(map[string]*tableColHeader)
 	t.header.cols = make([]*tableColHeader, 0)
 
@@ -215,7 +215,7 @@ func NewTable(width, height float32, cols []TableColumn) (*Table, error) {
 		}
 		// Creates a column header
 		c := new(tableColHeader)
-		c.Initialize(0, 0)
+		c.Initialize(c, 0, 0)
 		t.applyHeaderStyle(&c.Panel, false)
 		c.label = NewLabel(cdesc.Header)
 		c.Add(c.label)
@@ -260,7 +260,7 @@ func NewTable(width, height float32, cols []TableColumn) (*Table, error) {
 		t.header.Panel.Add(c)
 	}
 	// Creates last header
-	t.header.lastPan.Initialize(0, 0)
+	t.header.lastPan.Initialize(&t.header, 0, 0)
 	t.applyHeaderStyle(&t.header.lastPan, true)
 	t.header.Panel.Add(&t.header.lastPan)
 
@@ -268,13 +268,13 @@ func NewTable(width, height float32, cols []TableColumn) (*Table, error) {
 	t.Panel.Add(&t.header)
 
 	// Creates resizer panel
-	t.resizerPanel.Initialize(t.styles.Resizer.Width, 0)
+	t.resizerPanel.Initialize(&t.resizerPanel, t.styles.Resizer.Width, 0)
 	t.resizerPanel.SetVisible(false)
 	t.applyResizerStyle()
 	t.Panel.Add(&t.resizerPanel)
 
 	// Creates status panel
-	t.statusPanel.Initialize(0, 0)
+	t.statusPanel.Initialize(&t.statusPanel, 0, 0)
 	t.statusPanel.SetVisible(false)
 	t.statusLabel = NewLabel("")
 	t.applyStatusStyle()
@@ -282,8 +282,6 @@ func NewTable(width, height float32, cols []TableColumn) (*Table, error) {
 	t.Panel.Add(&t.statusPanel)
 
 	// Subscribe to events
-	t.Panel.Subscribe(OnCursorEnter, t.onCursor)
-	t.Panel.Subscribe(OnCursorLeave, t.onCursor)
 	t.Panel.Subscribe(OnCursor, t.onCursorPos)
 	t.Panel.Subscribe(OnScroll, t.onScroll)
 	t.Panel.Subscribe(OnMouseUp, t.onMouse)
@@ -693,12 +691,12 @@ func (t *Table) insertRow(row int, values map[string]interface{}) {
 
 	// Creates tableRow panel
 	trow := new(tableRow)
-	trow.Initialize(0, 0)
+	trow.Initialize(trow, 0, 0)
 	trow.cells = make([]*tableCell, 0)
 	for ci := 0; ci < len(t.header.cols); ci++ {
 		// Creates tableRow cell panel
 		cell := new(tableCell)
-		cell.Initialize(0, 0)
+		cell.Initialize(cell, 0, 0)
 		cell.label.initialize("", StyleDefault().Font)
 		cell.Add(&cell.label)
 		trow.cells = append(trow.cells, cell)
@@ -779,18 +777,6 @@ func (t *Table) removeRow(row int) {
 	trow.Dispose()
 }
 
-// onCursor process subscribed cursor events
-func (t *Table) onCursor(evname string, ev interface{}) {
-
-	switch evname {
-	case OnCursorEnter:
-		t.root.SetScrollFocus(t)
-	case OnCursorLeave:
-		t.root.SetScrollFocus(nil)
-	}
-	t.root.StopPropagation(Stop3D)
-}
-
 // onCursorPos process subscribed cursor position events
 func (t *Table) onCursorPos(evname string, ev interface{}) {
 
@@ -814,7 +800,7 @@ func (t *Table) onCursorPos(evname string, ev interface{}) {
 				found = true
 				t.resizeCol = ci
 				t.resizerX = c.xr
-				t.root.SetCursorHResize()
+				window.Get().SetCursor(window.HResizeCursor)
 			}
 			break
 		}
@@ -822,17 +808,16 @@ func (t *Table) onCursorPos(evname string, ev interface{}) {
 	// If column not found but previously was near a resizable column,
 	// resets the the window cursor.
 	if !found && t.resizeCol >= 0 {
-		t.root.SetCursorNormal()
+		window.Get().SetCursor(window.ArrowCursor)
 		t.resizeCol = -1
 	}
-	t.root.StopPropagation(Stop3D)
 }
 
 // onMouseEvent process subscribed mouse events
 func (t *Table) onMouse(evname string, ev interface{}) {
 
 	e := ev.(*window.MouseEvent)
-	t.root.SetKeyFocus(t)
+	Manager().SetKeyFocus(t)
 	switch evname {
 	case OnMouseDown:
 		// If over a resizable column border, shows the resizer panel
@@ -870,7 +855,7 @@ func (t *Table) onMouse(evname string, ev interface{}) {
 		if t.resizing {
 			t.resizing = false
 			t.resizerPanel.SetVisible(false)
-			t.root.SetCursorNormal()
+			window.Get().SetCursor(window.ArrowCursor)
 			// Calculates the new column width
 			cx, _ := t.ContentCoords(e.Xpos, e.Ypos)
 			c := t.header.cols[t.resizeCol]
@@ -880,26 +865,25 @@ func (t *Table) onMouse(evname string, ev interface{}) {
 	default:
 		return
 	}
-	t.root.StopPropagation(StopAll)
 }
 
 // onKeyEvent receives subscribed key events for this table
 func (t *Table) onKey(evname string, ev interface{}) {
 
 	kev := ev.(*window.KeyEvent)
-	if kev.Keycode == window.KeyUp && kev.Mods == 0 {
+	if kev.Key == window.KeyUp && kev.Mods == 0 {
 		t.selPrev()
-	} else if kev.Keycode == window.KeyDown && kev.Mods == 0 {
+	} else if kev.Key == window.KeyDown && kev.Mods == 0 {
 		t.selNext()
-	} else if kev.Keycode == window.KeyPageUp && kev.Mods == 0 {
+	} else if kev.Key == window.KeyPageUp && kev.Mods == 0 {
 		t.prevPage()
-	} else if kev.Keycode == window.KeyPageDown && kev.Mods == 0 {
+	} else if kev.Key == window.KeyPageDown && kev.Mods == 0 {
 		t.nextPage()
-	} else if kev.Keycode == window.KeyPageUp && kev.Mods == window.ModControl {
+	} else if kev.Key == window.KeyPageUp && kev.Mods == window.ModControl {
 		t.firstPage()
-	} else if kev.Keycode == window.KeyPageDown && kev.Mods == window.ModControl {
+	} else if kev.Key == window.KeyPageDown && kev.Mods == window.ModControl {
 		t.lastPage()
-	} else if kev.Keycode == window.KeyEnter && kev.Mods == window.ModControl {
+	} else if kev.Key == window.KeyEnter && kev.Mods == window.ModControl {
 		if t.selType == TableSelMultiRow {
 			t.toggleRowSel(t.rowCursor)
 		}
@@ -922,21 +906,20 @@ func (t *Table) onScroll(evname string, ev interface{}) {
 	} else if sev.Yoffset < 0 {
 		t.scrollDown(1)
 	}
-	t.root.StopPropagation(Stop3D)
 }
 
 // onRicon receives subscribed events for column header right icon
 func (t *Table) onRicon(evname string, c *tableColHeader) {
 
-	icon := tableSortedNoneIcon
+	ico := tableSortedNoneIcon
 	var asc bool
 	if c.sorted == tableSortedNone || c.sorted == tableSortedDesc {
 		c.sorted = tableSortedAsc
-		icon = tableSortedAscIcon
+		ico = tableSortedAscIcon
 		asc = false
 	} else {
 		c.sorted = tableSortedDesc
-		icon = tableSortedDescIcon
+		ico = tableSortedDescIcon
 		asc = true
 	}
 
@@ -947,7 +930,7 @@ func (t *Table) onRicon(evname string, c *tableColHeader) {
 		asString = false
 	}
 	t.SortColumn(c.id, asString, asc)
-	c.ricon.SetText(string(icon))
+	c.ricon.SetText(string(ico))
 }
 
 // findClick finds where in the table the specified mouse click event
