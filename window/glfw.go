@@ -9,15 +9,17 @@ package window
 import (
 	"bytes"
 	"fmt"
-	"github.com/g3n/engine/gui/assets"
 	"runtime"
+
+	"github.com/g3n/engine/gui/assets"
+
+	"image"
+	_ "image/png"
+	"os"
 
 	"github.com/g3n/engine/core"
 	"github.com/g3n/engine/gls"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"image"
-	_ "image/png"
-	"os"
 )
 
 // Keycodes
@@ -409,8 +411,12 @@ func (w *GlfwWindow) SetFullscreen(full bool) {
 func (w *GlfwWindow) Destroy() {
 
 	w.Window.Destroy()
+}
+
+func (w *GlfwWindow) Close() {
 	glfw.Terminate()
 	runtime.UnlockOSThread() // Important when using the execution tracer
+
 }
 
 // Scale returns this window's DPI scale factor (FramebufferSize / Size)
