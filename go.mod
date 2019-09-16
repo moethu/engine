@@ -9,4 +9,4 @@ require (
 	gopkg.in/yaml.v2 v2.2.2
 )
 
-replace github.com/g3n/engine => github.com/moethu/engine
+replace github.com/g3n/engine => github.com/moethu/engine webg3n
