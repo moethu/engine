@@ -409,8 +409,12 @@ func (w *GlfwWindow) SetFullscreen(full bool) {
 func (w *GlfwWindow) Destroy() {
 
 	w.Window.Destroy()
-	glfw.Terminate()
+
 	runtime.UnlockOSThread() // Important when using the execution tracer
+}
+
+func (w *GlfwWindow) DestroyGlfwManager() {
+	glfw.Terminate()
 }
 
 // Scale returns this window's DPI scale factor (FramebufferSize / Size)
