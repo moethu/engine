@@ -5,10 +5,10 @@
 package gui
 
 import (
-	"github.com/g3n/engine/gui/assets"
-	"github.com/g3n/engine/gui/assets/icon"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/text"
+	"github.com/moethu/engine/gui/assets"
+	"github.com/moethu/engine/gui/assets/icon"
+	"github.com/moethu/engine/math32"
+	"github.com/moethu/engine/text"
 )
 
 // NewLightStyle creates and returns a pointer to the a new "light" style

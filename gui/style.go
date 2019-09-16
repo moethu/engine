@@ -5,8 +5,8 @@
 package gui
 
 import (
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/text"
+	"github.com/moethu/engine/math32"
+	"github.com/moethu/engine/text"
 )
 
 // Style contains the styles for all GUI elements

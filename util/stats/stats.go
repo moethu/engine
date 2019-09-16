@@ -1,7 +1,7 @@
 package stats
 
 import (
-	"github.com/g3n/engine/gls"
+	"github.com/moethu/engine/gls"
 	"runtime"
 	"time"
 )

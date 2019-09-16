@@ -5,10 +5,10 @@
 package physics
 
 import (
-	"github.com/g3n/engine/experimental/physics/object"
-	"github.com/g3n/engine/experimental/physics/equation"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/experimental/collision/shape"
+	"github.com/moethu/engine/experimental/physics/object"
+	"github.com/moethu/engine/experimental/physics/equation"
+	"github.com/moethu/engine/math32"
+	"github.com/moethu/engine/experimental/collision/shape"
 )
 
 // Narrowphase

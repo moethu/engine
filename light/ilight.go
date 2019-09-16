@@ -5,8 +5,8 @@
 package light
 
 import (
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/gls"
+	"github.com/moethu/engine/core"
+	"github.com/moethu/engine/gls"
 )
 
 // ILight is the interface that must be implemented for all light types.

@@ -5,11 +5,11 @@
 package util
 
 import (
-	"github.com/g3n/engine/geometry"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/graphic"
-	"github.com/g3n/engine/material"
-	"github.com/g3n/engine/math32"
+	"github.com/moethu/engine/geometry"
+	"github.com/moethu/engine/gls"
+	"github.com/moethu/engine/graphic"
+	"github.com/moethu/engine/material"
+	"github.com/moethu/engine/math32"
 )
 
 // GridHelper is a visual representation of a grid.

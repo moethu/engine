@@ -5,9 +5,9 @@
 package animation
 
 import (
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/geometry"
+	"github.com/moethu/engine/core"
+	"github.com/moethu/engine/math32"
+	"github.com/moethu/engine/geometry"
 )
 
 // A Channel associates an animation parameter channel to an interpolation sampler

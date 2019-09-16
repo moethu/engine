@@ -13,7 +13,7 @@ import (
 	_ "image/png"
 	"os"
 
-	"github.com/g3n/engine/gls"
+	"github.com/moethu/engine/gls"
 )
 
 // Texture2D represents a texture

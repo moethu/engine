@@ -5,8 +5,8 @@
 package texture
 
 import (
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
+	"github.com/moethu/engine/gls"
+	"github.com/moethu/engine/math32"
 )
 
 // NewBoard creates and returns a pointer to a new checker board 2D texture.

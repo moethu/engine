@@ -6,8 +6,8 @@ package collada
 
 import (
 	"fmt"
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/math32"
+	"github.com/moethu/engine/core"
+	"github.com/moethu/engine/math32"
 	"strings"
 )
 

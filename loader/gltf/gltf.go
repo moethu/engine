@@ -6,14 +6,14 @@
 package gltf
 
 import (
-	"github.com/g3n/engine/animation"
-	"github.com/g3n/engine/camera"
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/material"
-	"github.com/g3n/engine/math32"
+	"github.com/moethu/engine/animation"
+	"github.com/moethu/engine/camera"
+	"github.com/moethu/engine/core"
+	"github.com/moethu/engine/gls"
+	"github.com/moethu/engine/material"
+	"github.com/moethu/engine/math32"
 	"image"
-	"github.com/g3n/engine/graphic"
+	"github.com/moethu/engine/graphic"
 )
 
 // glTF Extensions.

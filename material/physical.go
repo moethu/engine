@@ -5,9 +5,9 @@
 package material
 
 import (
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/texture"
+	"github.com/moethu/engine/gls"
+	"github.com/moethu/engine/math32"
+	"github.com/moethu/engine/texture"
 )
 
 // Physical is a physically based rendered material which uses the metallic-roughness model.

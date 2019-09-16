@@ -5,7 +5,7 @@
 package texture
 
 import (
-	"github.com/g3n/engine/util/logger"
+	"github.com/moethu/engine/util/logger"
 )
 
 // Package logger

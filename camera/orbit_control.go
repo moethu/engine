@@ -5,10 +5,10 @@
 package camera
 
 import (
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/gui"
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/window"
+	"github.com/moethu/engine/core"
+	"github.com/moethu/engine/gui"
+	"github.com/moethu/engine/math32"
+	"github.com/moethu/engine/window"
 	"math"
 )
 

@@ -6,9 +6,9 @@ package collada
 
 import (
 	"fmt"
-	"github.com/g3n/engine/geometry"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
+	"github.com/moethu/engine/geometry"
+	"github.com/moethu/engine/gls"
+	"github.com/moethu/engine/math32"
 	"reflect"
 	"strings"
 )

@@ -7,10 +7,10 @@
 package audio
 
 import (
-	"github.com/g3n/engine/audio/al"
-	"github.com/g3n/engine/core"
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
+	"github.com/moethu/engine/audio/al"
+	"github.com/moethu/engine/core"
+	"github.com/moethu/engine/gls"
+	"github.com/moethu/engine/math32"
 )
 
 // Listener is an audio listener positioned in space

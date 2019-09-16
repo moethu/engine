@@ -5,8 +5,8 @@
 package gui
 
 import (
-	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/window"
+	"github.com/moethu/engine/math32"
+	"github.com/moethu/engine/window"
 )
 
 // Splitter is a GUI element that splits two panels and can be adjusted

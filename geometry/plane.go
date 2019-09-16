@@ -5,8 +5,8 @@
 package geometry
 
 import (
-	"github.com/g3n/engine/gls"
-	"github.com/g3n/engine/math32"
+	"github.com/moethu/engine/gls"
+	"github.com/moethu/engine/math32"
 )
 
 // Plane represents a plane geometry
