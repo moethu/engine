@@ -1,4 +1,4 @@
-module github.com/g3n/engine
+module github.com/moethu/engine
 
 go 1.12
 
@@ -8,3 +8,5 @@ require (
 	golang.org/x/image v0.0.0-20190910094157-69e4b8554b2a
 	gopkg.in/yaml.v2 v2.2.2
 )
+
+replace github.com/g3n/engine => github.com/moethu/engine
