@@ -408,12 +408,11 @@ func (w *GlfwWindow) SetFullscreen(full bool) {
 // Destroy destroys this window and its context
 func (w *GlfwWindow) Destroy() {
 
-	w.Window.Destroy()
-
-	runtime.UnlockOSThread() // Important when using the execution tracer
 }
 
 func (w *GlfwWindow) DestroyGlfwManager() {
+	w.Window.Destroy()
+	runtime.UnlockOSThread() // Important when using the execution tracer
 	glfw.Terminate()
 }
 
