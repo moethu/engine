@@ -5,7 +5,7 @@
 package gui
 
 import (
-	"engine/texture"
+	"github.com/g3n/engine/texture"
 	"image"
 )
 

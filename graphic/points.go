@@ -5,11 +5,11 @@
 package graphic
 
 import (
-	"engine/core"
-	"engine/geometry"
-	"engine/gls"
-	"engine/material"
-	"engine/math32"
+	"github.com/g3n/engine/core"
+	"github.com/g3n/engine/geometry"
+	"github.com/g3n/engine/gls"
+	"github.com/g3n/engine/material"
+	"github.com/g3n/engine/math32"
 )
 
 // Points represents a geometry containing only points

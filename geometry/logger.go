@@ -5,7 +5,7 @@
 package geometry
 
 import (
-	"engine/util/logger"
+	"github.com/g3n/engine/util/logger"
 )
 
 // Package logger

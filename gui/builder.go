@@ -12,9 +12,9 @@ import (
 	"strconv"
 	"strings"
 
-	"engine/gui/assets/icon"
-	"engine/math32"
-	"engine/window"
+	"github.com/g3n/engine/gui/assets/icon"
+	"github.com/g3n/engine/math32"
+	"github.com/g3n/engine/window"
 	"gopkg.in/yaml.v2"
 )
 

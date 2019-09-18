@@ -7,13 +7,13 @@ package window
 import (
 	"runtime"
 
-	"engine/core"
+	"github.com/g3n/engine/core"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"os"
 	"image"
 	_ "image/png"
 	"bytes"
-	"engine/gui/assets"
+	"github.com/g3n/engine/gui/assets"
 )
 
 // glfwManager contains data shared by all windows

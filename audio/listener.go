@@ -5,10 +5,10 @@
 package audio
 
 import (
-	"engine/audio/al"
-	"engine/core"
-	"engine/gls"
-	"engine/math32"
+	"github.com/g3n/engine/audio/al"
+	"github.com/g3n/engine/core"
+	"github.com/g3n/engine/gls"
+	"github.com/g3n/engine/math32"
 )
 
 // Listener is an audio listener positioned in space

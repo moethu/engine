@@ -5,7 +5,7 @@
 package gui
 
 import (
-	"engine/window"
+	"github.com/g3n/engine/window"
 )
 
 /***************************************

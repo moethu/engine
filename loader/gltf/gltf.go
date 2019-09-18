@@ -6,13 +6,13 @@
 package gltf
 
 import (
-	"engine/animation"
-	"engine/camera"
-	"engine/core"
-	"engine/gls"
-	"engine/graphic"
-	"engine/material"
-	"engine/math32"
+	"github.com/g3n/engine/animation"
+	"github.com/g3n/engine/camera"
+	"github.com/g3n/engine/core"
+	"github.com/g3n/engine/gls"
+	"github.com/g3n/engine/graphic"
+	"github.com/g3n/engine/material"
+	"github.com/g3n/engine/math32"
 	"image"
 )
 

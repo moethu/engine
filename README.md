@@ -97,12 +97,12 @@ Install the development files of OpenAL and Vorbis using [Homebrew](https://brew
   package main
 
   import (
-      "engine/util/application"
-      "engine/geometry"
-      "engine/material"
-      "engine/math32"
-      "engine/graphic"
-      "engine/light"
+      "github.com/g3n/engine/util/application"
+      "github.com/g3n/engine/geometry"
+      "github.com/g3n/engine/material"
+      "github.com/g3n/engine/math32"
+      "github.com/g3n/engine/graphic"
+      "github.com/g3n/engine/light"
   )
 
   func main() {

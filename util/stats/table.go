@@ -1,8 +1,8 @@
 package stats
 
 import (
-	"engine/gls"
-	"engine/gui"
+	"github.com/g3n/engine/gls"
+	"github.com/g3n/engine/gui"
 )
 
 // StatsTable is a gui.Table panel with statistics

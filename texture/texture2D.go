@@ -14,7 +14,7 @@ import (
 	"os"
 	"unsafe"
 
-	"engine/gls"
+	"github.com/g3n/engine/gls"
 )
 
 // Texture2D represents a texture

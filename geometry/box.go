@@ -5,8 +5,8 @@
 package geometry
 
 import (
-	"engine/gls"
-	"engine/math32"
+	"github.com/g3n/engine/gls"
+	"github.com/g3n/engine/math32"
 )
 
 // Box represents the geometry of a rectangular cuboid.

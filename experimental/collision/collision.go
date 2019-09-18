@@ -4,7 +4,7 @@
 
 package collision
 
-import "engine/geometry"
+import "github.com/g3n/engine/geometry"
 
 // TODO collision checking function dependent on collision shapes
 

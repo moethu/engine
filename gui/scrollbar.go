@@ -5,8 +5,8 @@
 package gui
 
 import (
-	"engine/math32"
-	"engine/window"
+	"github.com/g3n/engine/math32"
+	"github.com/g3n/engine/window"
 )
 
 /***************************************
