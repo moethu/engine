@@ -10,4 +10,4 @@ require (
 	gopkg.in/yaml.v2 v2.2.2
 )
 
-replace github.com/g3n/engine => github.com/moethu/engine legacy
+replace github.com/g3n/engine => github.com/moethu/engine v0.0.0-20190918210606-18765163199a
