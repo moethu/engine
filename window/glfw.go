@@ -192,6 +192,10 @@ func (m *glfwManager) CreateWindow(width, height int, title string, fullscreen b
 	// The window is created always as not full screen because if it is
 	// created as full screen it not possible to revert it to windowed mode.
 	// At the end of this function, the window will be set to full screen if requested.
+
+	// off-screen rendering
+	glfw.WindowHint(glfw.Visible, glfw.False)
+
 	win, err := glfw.CreateWindow(width, height, title, nil, nil)
 	if err != nil {
 		return nil, err
